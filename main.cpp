@@ -32,10 +32,30 @@ void printGraph(const g2o::OptimizableGraph& optimizable){
 			std::cout << " " << *ite2;
 		}
 		std::cout << std::endl;
-	}	
+	}		
+}
+
+void found(const g2o::OptimizableGraph& optimizable, const g2o::HyperGraph::Vertex* vert){
+
+	auto idmap = optimizable.vertices();
+	auto idmapedges = optimizable.edges();
+	
+	std::cout << std::endl;
+	for ( auto it = idmap.begin(); it != idmap.end(); ++it ){
+		std::cout << " " << it->first << " : " << it->second << std::endl;
+		if(vert == it->second){
+			std::cout << "FOUND" << std::endl;
+		}
+		else{
+			std::cout << "Not the same" << std::endl;
+		}
+	}
+	
 	
 	
 }
+
+
 
 int main(int argc, char **argv) {
     std::cout << "Hello, world!" << std::endl;
@@ -75,10 +95,19 @@ int main(int argc, char **argv) {
 	optimizable.addVertex(landmark2);
 	optimizable.addEdge(edgelink);
 	
+	found(optimizable, landmark);
+	
+	//TRYING TO UPDATE THE NODE
+	std::cout << "Updating the graph" << std::endl;
+// 	landmark->setId(100);
+	optimizable.changeId(landmark, 100);
 	printGraph(optimizable);
+	g2o::VertexPointXY* landmark3 = dynamic_cast<g2o::VertexPointXY*>(optimizable.vertex(100));
+	std::cout << "the new id " << landmark3 << " with " << landmark3->id() << std::endl;
+	
 	
 	std::cout << "Removing the vertex" << std::endl;
-	optimizable.removeVertex(landmark, true);
+	optimizable.removeVertex(landmark2, true);
 	std::cout << "Done the vertex" << std::endl;
 	
 	printGraph(optimizable);
