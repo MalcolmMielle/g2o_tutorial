@@ -24,6 +24,21 @@ void printGraph(const g2o::OptimizableGraph& optimizable){
 	std::cout << std::endl;
 	for ( auto it = idmap.begin(); it != idmap.end(); ++it ){
 		std::cout << " " << it->first << " : " << it->second << std::endl;
+		std::cout << "Type id " << typeid( it->second ).name()<< " " <<typeid(g2o::VertexPointXY*).name() << std::endl;
+		std::cout << "Type id " << typeid( it->second ).hash_code()<< " " <<typeid(g2o::VertexPointXY*).hash_code() << std::endl;
+		//Doesn't work
+		if(typeid( it->second ) == typeid(g2o::VertexPointXY*) ){
+			std::cout << "esti : " << (dynamic_cast<g2o::VertexPointXY*>(it->second))->estimate() << std::endl;
+		}
+		
+		g2o::VertexPointXY* ptr = dynamic_cast<g2o::VertexPointXY*>(it->second);
+		if (ptr != NULL) 
+		{ 
+			std::cout << "esti : " << (dynamic_cast<g2o::VertexPointXY*>(it->second))->estimate() << std::endl;
+		} 
+		
+		
+		
 	}
 	std::cout << std::endl;
 	for ( auto ite = idmapedges.begin(); ite != idmapedges.end(); ++ite ){
@@ -69,7 +84,12 @@ int main(int argc, char **argv) {
 	g2o::VertexPointXY* landmark = new g2o::VertexPointXY();
 	landmark->setId(1);
 	
+	landmark->setEstimate(g2o::Vector2D(10, 10));
+	g2o::Vector2D esti = landmark->estimate();
+	
+	
 	std::cout << "Landmark : " << landmark << std::endl;
+	std::cout << "Estimate " << esti << std::endl;
 	std::cout << "edge : " << edgelink << std::endl;
 	std::cout << "edge : " << edgelink2 << std::endl;
 	std::cout << "edge : " << edgese2 << std::endl;
@@ -109,6 +129,9 @@ int main(int argc, char **argv) {
 	std::cout << "Removing the vertex" << std::endl;
 	optimizable.removeVertex(landmark2, true);
 	std::cout << "Done the vertex" << std::endl;
+	
+	landmark->setEstimate(g2o::Vector2D(100, 10));
+// 	g2o::Vector2D esti = landmark->estimate();
 	
 	printGraph(optimizable);
 	
