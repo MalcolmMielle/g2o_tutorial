@@ -26,6 +26,7 @@ void printGraph(const g2o::OptimizableGraph& optimizable){
 		std::cout << " " << it->first << " : " << it->second << std::endl;
 		std::cout << "Type id " << typeid( it->second ).name()<< " " <<typeid(g2o::VertexPointXY*).name() << std::endl;
 		std::cout << "Type id " << typeid( it->second ).hash_code()<< " " <<typeid(g2o::VertexPointXY*).hash_code() << std::endl;
+		std::cout << "id " << it->first<< std::endl;
 		//Doesn't work
 		if(typeid( it->second ) == typeid(g2o::VertexPointXY*) ){
 			std::cout << "esti : " << (dynamic_cast<g2o::VertexPointXY*>(it->second))->estimate() << std::endl;
@@ -82,7 +83,7 @@ int main(int argc, char **argv) {
 	g2o::EdgeSE2PointXY* edgese2 = new g2o::EdgeSE2PointXY();
 	
 	g2o::VertexPointXY* landmark = new g2o::VertexPointXY();
-	landmark->setId(1);
+	landmark->setId(10);
 	
 	landmark->setEstimate(g2o::Vector2D(10, 10));
 	g2o::Vector2D esti = landmark->estimate();
@@ -96,10 +97,14 @@ int main(int argc, char **argv) {
 	
 	std::cout << std::endl;
 	
-	edgelink->vertices()[0] = landmark;
-	edgelink->vertices()[1] = landmark;
 	
 	optimizable.addVertex(landmark);
+	
+	edgelink->vertices()[0] = landmark;
+	edgelink->vertices()[1] = optimizable.vertex(1);
+	
+	std::cout << " POINTY " << optimizable.vertex(1) << std::endl;
+	
 	optimizable.addEdge(edgelink);
 // 	optimizable.addEdge(edgelink2);
 // 	optimizable.addEdge(edgese2);
